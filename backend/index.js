@@ -196,15 +196,23 @@ io.on("connection", (socket) => {
   })
 })
 
-// Serve frontend static files in production
+// Serve frontend static files
+import fs from "fs";
 const distPath = path.resolve(process.cwd(), "dist");
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(distPath));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(distPath, "index.html"));
-  });
-}
+app.use(express.static(distPath));
+app.get("*", (req, res) => {
+  const indexPath = path.join(distPath, "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        res.status(500).send(`Error serving index.html: ${err.message}`);
+      }
+    });
+  } else {
+    res.status(404).send(`Frontend not built. dist/index.html is missing at ${indexPath}`);
+  }
+});
 
 const PORT = process.env.PORT || 5000
 server.listen(PORT, async () => {
