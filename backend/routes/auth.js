@@ -301,11 +301,8 @@ router.get('/google/callback',
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
-    // Redirect to frontend (production or development)
-    const frontendUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://codethrone.netlify.app'
-      : 'https://codethrone.netlify.app';
-    res.redirect(`${frontendUrl}/oauth?token=${encodeURIComponent(token)}`);
+    // Redirect to frontend oauth handler route on the same domain
+    res.redirect(`/oauth?token=${encodeURIComponent(token)}`);
     // Or: res.json({ token, user });
   }
 );
