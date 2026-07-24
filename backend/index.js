@@ -166,6 +166,30 @@ app.get("/api/health", (req, res) => {
   })
 })
 
+// Debug endpoint to list files on server
+app.get("/api/debug-files", (req, res) => {
+  import("fs").then(fs => {
+    try {
+      const rootFiles = fs.readdirSync(process.cwd());
+      let distFiles = [];
+      try {
+        distFiles = fs.readdirSync(path.join(process.cwd(), 'dist'));
+      } catch (e) {
+        distFiles = ['Error reading dist: ' + e.message];
+      }
+      res.json({ 
+        cwd: process.cwd(), 
+        rootFiles, 
+        distFiles,
+        __dirname,
+        __filename
+      });
+    } catch(e) {
+      res.status(500).json({ error: e.toString() });
+    }
+  });
+});
+
 // ✅ CRITICAL FIX: Make io instance available to routes
 app.set("io", io)
 console.log("✅ Socket.IO instance made available to routes")
