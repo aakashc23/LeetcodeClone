@@ -3,7 +3,7 @@ services:
   - type: web
     name: codestar-fullstack
     env: node
-    plan: starter
+    plan: free
     buildCommand: |
       echo "📦 Installing root dependencies..."
       npm install
