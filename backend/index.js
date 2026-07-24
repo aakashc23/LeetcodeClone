@@ -6,6 +6,8 @@ import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
 import { createServer } from "http"
+import path from "path"
+import { fileURLToPath } from "url"
 import { Server } from "socket.io"
 import authRoutes from "./routes/auth.js"
 import problemRoutes from "./routes/problems.js"
@@ -193,6 +195,17 @@ io.on("connection", (socket) => {
     console.error(`🔌 Socket error: ${socket.id}`, error)
   })
 })
+
+// Serve frontend static files in production
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../dist", "index.html"));
+  });
+}
 
 const PORT = process.env.PORT || 5000
 server.listen(PORT, async () => {
