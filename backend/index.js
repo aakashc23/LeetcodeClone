@@ -220,7 +220,7 @@ io.on("connection", (socket) => {
 
 // Serve frontend static files
 import fs from "fs";
-const distPath = path.resolve(process.cwd(), "dist");
+const distPath = path.resolve(process.cwd(), "frontend-build");
 
 app.use(express.static(distPath));
 app.get("*", (req, res) => {

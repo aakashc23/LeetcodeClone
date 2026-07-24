@@ -9,6 +9,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    outDir: 'frontend-build'
+  },
   plugins: [react()],
   optimizeDeps: {
     exclude: ['lucide-react'],

@@ -5,12 +5,13 @@ services:
     env: node
     plan: free
     buildCommand: |
+      set -e
       echo "📦 Installing root dependencies..."
       npm install
       echo "🏗️ Building frontend..."
       npm run build
       echo "📁 Listing build output..."
-      ls -la dist/
+      ls -la frontend-build/
       echo "📦 Installing backend dependencies..."
       cd backend && npm install
       echo "✅ Build complete!"
