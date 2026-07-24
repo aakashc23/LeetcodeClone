@@ -180,9 +180,7 @@ app.get("/api/debug-files", (req, res) => {
       res.json({ 
         cwd: process.cwd(), 
         rootFiles, 
-        distFiles,
-        __dirname,
-        __filename
+        distFiles
       });
     } catch(e) {
       res.status(500).json({ error: e.toString() });
