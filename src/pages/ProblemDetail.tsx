@@ -711,7 +711,9 @@ const ProblemDetail: React.FC = () => {
       const result = await response.json();
 
       let generatedText = "Failed to get a response from the AI. Please try again.";
-      if (result.candidates && result.candidates.length > 0 &&
+      if (result.error) {
+        generatedText = `API Error: ${result.error.message || 'Invalid API Key or blocked request'}. Please check your VITE_GEMINI_API_KEY in Render.`;
+      } else if (result.candidates && result.candidates.length > 0 &&
           result.candidates[0].content && result.candidates[0].content.parts &&
           result.candidates[0].content.parts.length > 0) {
         generatedText = result.candidates[0].content.parts[0].text;

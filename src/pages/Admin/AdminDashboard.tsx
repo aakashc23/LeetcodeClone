@@ -440,7 +440,8 @@ const AdminDashboard: React.FC = () => {
         isPublished: newProblem.isPublished,
         isFeatured: newProblem.isFeatured,
         editorial: newProblem.editorial.written ? newProblem.editorial : undefined,
-        visibility: newProblem.visibility
+        visibility: newProblem.visibility,
+        referenceSolution: newProblem.referenceSolution.filter(sol => sol.language && sol.completeCode)
       };
 
       console.log('📤 Sending problem data:', problemData);
