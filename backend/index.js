@@ -24,6 +24,8 @@ import { setupGameSocket } from "./socket/game.js"
 import { setupChatSocket } from "./socket/chat.js" // ✅ CRITICAL: Import chat socket
 import { setupRapidFireSocket } from "./socket/rapidfire.js"
 import geminiRoutes from "./routes/gemini.js"
+import cron from "node-cron";
+import POTDService from "./services/POTDService.js";
 import chatsRoutes from "./routes/chats.js"
 import chatRoutes from "./routes/chat.js"
 import announcementsRouter from "./routes/announcements.js"
@@ -266,6 +268,20 @@ setInterval(async () => {
   console.log('⏰ Running automatic contest status and rating updates...');
   await updateContestStatusesAndRatings();
 }, 60 * 1000); // Every minute
+
+// Automatically generate a random Problem of the Day (POTD) every day at midnight UTC
+cron.schedule('0 0 * * *', async () => {
+  console.log('⏰ Running daily POTD generation cron job...');
+  try {
+    await POTDService.generateNewPOTD();
+    console.log('✅ Daily POTD generated successfully by cron job');
+  } catch (error) {
+    console.error('❌ Error in daily POTD cron job:', error);
+  }
+}, {
+  scheduled: true,
+  timezone: "UTC"
+});
 
 // Legacy backfill system - kept for manual maintenance
 async function backfillContestHistory() {
