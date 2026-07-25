@@ -2261,7 +2261,16 @@ const ProblemDetail: React.FC = () => {
                         <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Video Editorial</h3>
                         <div className="relative" style={{ paddingBottom: "56.25%", height: 0 }}>
                           <iframe
-                            src={editorial.videoUrl}
+                            src={(() => {
+                              const url = editorial.videoUrl;
+                              if (!url) return '';
+                              const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                              const match = url.match(regExp);
+                              if (match && match[2].length === 11) {
+                                return `https://www.youtube.com/embed/${match[2]}`;
+                              }
+                              return url;
+                            })()}
                             title="Video Editorial"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
