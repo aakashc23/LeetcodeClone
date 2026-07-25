@@ -517,6 +517,29 @@ const AdminDashboard: React.FC = () => {
   };
 
   // Helper functions for managing test cases and examples
+
+  const addEditExample = () => setEditProblemData((prev: any) => ({ ...prev, examples: [...(prev.examples || []), { input: '', output: '', explanation: '' }] }));
+  const removeEditExample = (index: number) => setEditProblemData((prev: any) => {
+    if ((prev.examples || []).length > 1) return { ...prev, examples: prev.examples.filter((_: any, i: number) => i !== index) };
+    return prev;
+  });
+  const updateEditExample = (index: number, field: string, value: string) => setEditProblemData((prev: any) => {
+    const examples = [...(prev.examples || [])];
+    examples[index] = { ...examples[index], [field]: value };
+    return { ...prev, examples };
+  });
+
+  const addEditTestCase = () => setEditProblemData((prev: any) => ({ ...prev, testCases: [...(prev.testCases || []), { input: '', output: '', explanation: '', isPublic: false }] }));
+  const removeEditTestCase = (index: number) => setEditProblemData((prev: any) => {
+    if ((prev.testCases || []).length > 1) return { ...prev, testCases: prev.testCases.filter((_: any, i: number) => i !== index) };
+    return prev;
+  });
+  const updateEditTestCase = (index: number, field: string, value: any) => setEditProblemData((prev: any) => {
+    const testCases = [...(prev.testCases || [])];
+    testCases[index] = { ...testCases[index], [field]: value };
+    return { ...prev, testCases };
+  });
+
   const addTestCase = () => {
     setNewProblem(prev => ({
       ...prev,
@@ -862,7 +885,18 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleEditProblem = (problem: Problem) => {
+  const handleEditProblem = async (problem: Problem) => {
+    setEditingProblemId(problem._id);
+    setEditProblemData({ ...problem });
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/problems/admin/${problem._id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setEditProblemData(response.data);
+    } catch (error) {
+      console.error('Failed to fetch full problem data:', error);
+    }
     setEditingProblemId(problem._id);
     setEditProblemData({ ...problem });
   };
@@ -2131,6 +2165,8 @@ const AdminDashboard: React.FC = () => {
                           </div>
                         </div>
 
+                        {/* Examples Section */}
+                        
                         <div className="flex space-x-4">
                           <button
                             type="submit"

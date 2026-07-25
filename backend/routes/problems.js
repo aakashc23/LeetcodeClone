@@ -237,6 +237,24 @@ router.get('/admin/all', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
+// Admin: Get single problem with ALL details (including hidden test cases)
+router.get('/admin/:id', authenticateToken, requireAdmin, async (req, res) => {
+  console.log('🛡️ Admin get single problem request:', req.params.id);
+  try {
+    const problem = await Problem.findById(req.params.id)
+      .populate('createdBy', 'username');
+      
+    if (!problem) {
+      return res.status(404).json({ message: 'Problem not found' });
+    }
+    
+    res.json(problem);
+  } catch (error) {
+    console.error('❌ Admin get single problem error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // Get all problems
 router.get('/', async (req, res) => {
   console.log('📚 Get problems request');
@@ -730,9 +748,6 @@ function simulateCodeExecution(code, language, input, expectedOutput) {
           console.log('✅ Sorting simulation: Correct output expected');
           return expectedOutput.trim();
         }
-        
-        // If code looks like it sorts, return sorted array
-        return sorted.join(' ');
       }
       
       // Array maximum problem
@@ -745,7 +760,6 @@ function simulateCodeExecution(code, language, input, expectedOutput) {
         if (expectedOutput.trim() === max.toString()) {
           return expectedOutput.trim();
         }
-        return max.toString();
       }
       
       // Array minimum problem
@@ -757,7 +771,6 @@ function simulateCodeExecution(code, language, input, expectedOutput) {
         if (expectedOutput.trim() === min.toString()) {
           return expectedOutput.trim();
         }
-        return min.toString();
       }
       
       // Sum calculation
@@ -769,7 +782,6 @@ function simulateCodeExecution(code, language, input, expectedOutput) {
         if (expectedOutput.trim() === sum.toString()) {
           return expectedOutput.trim();
         }
-        return sum.toString();
       }
       
       // Count/length problems
@@ -780,7 +792,6 @@ function simulateCodeExecution(code, language, input, expectedOutput) {
         if (expectedOutput.trim() === numbers.length.toString()) {
           return expectedOutput.trim();
         }
-        return numbers.length.toString();
       }
       
       // Average calculation
@@ -791,7 +802,6 @@ function simulateCodeExecution(code, language, input, expectedOutput) {
         if (expectedOutput.trim() === Math.floor(avg).toString()) {
           return expectedOutput.trim();
         }
-        return Math.floor(avg).toString();
       }
       
       // ✅ SMART FALLBACK: Try to match the expected output pattern
@@ -820,8 +830,9 @@ function simulateCodeExecution(code, language, input, expectedOutput) {
       // If expected output looks like an array, try sorted array
       if (expectedOutput.includes(' ')) {
         const sorted = [...numbers].sort((a, b) => a - b);
-        console.log('🔄 Trying sorted array as fallback');
-        return sorted.join(' ');
+        if (expectedOutput.trim() === sorted.join(' ')) {
+           return expectedOutput.trim();
+        }
       }
     }
     
