@@ -22,6 +22,13 @@ class POTDService {
         isActive: true
       }).populate('problem');
       
+      // If POTD exists but the populated problem is null (it was deleted by admin)
+      if (potd && !potd.problem) {
+        console.log('📅 POTD found but problem was deleted, deleting invalid POTD and generating new one');
+        await ProblemOfTheDay.deleteOne({ _id: potd._id });
+        potd = null; // Force regeneration
+      }
+      
       if (!potd) {
         console.log('📅 POTD not found for today, generating new one');
         // Generate new POTD for today
