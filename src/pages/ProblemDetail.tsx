@@ -609,7 +609,7 @@ const ProblemDetail: React.FC = () => {
     const payload = { contents: chatHistoryForGemini };
       // const apiKey = process.env.GEMINI_API_KEY || ""; // Using the provided API key
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; // Using gemini-2.0-flash as per default
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -620,7 +620,9 @@ const ProblemDetail: React.FC = () => {
       const result = await response.json();
 
       let generatedText = "No response received.";
-      if (result.candidates && result.candidates.length > 0 &&
+      if (result.error) {
+        generatedText = `API Error: ${result.error.message || 'Invalid API Key or blocked request'}. Please check your VITE_GEMINI_API_KEY in Render.`;
+      } else if (result.candidates && result.candidates.length > 0 &&
           result.candidates[0].content && result.candidates[0].content.parts &&
           result.candidates[0].content.parts.length > 0) {
         generatedText = result.candidates[0].content.parts[0].text;
