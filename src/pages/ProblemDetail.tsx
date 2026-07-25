@@ -700,7 +700,7 @@ const ProblemDetail: React.FC = () => {
       const payload = { contents: chatHistoryForGemini };
       // const apiKey = process.env.GEMINI_API_KEY || ""; // Using the provided API key
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`; // Using gemini-1.5-flash as requested
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
       const response = await fetch(apiUrl, {
         method: 'POST',
