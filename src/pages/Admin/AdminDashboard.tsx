@@ -1764,6 +1764,15 @@ const AdminDashboard: React.FC = () => {
                               <TestTube className="mr-2 h-5 w-5" />
                               Test Cases ({newProblem.testCases.length})
                             </h5>
+                            <div className="ml-4 text-sm text-gray-500 dark:text-gray-400 max-w-2xl bg-blue-50 dark:bg-blue-900/20 p-3 rounded-md border border-blue-100 dark:border-blue-800">
+                              <p className="font-semibold text-blue-700 dark:text-blue-400 mb-1">📝 How to write Test Cases:</p>
+                              <ul className="list-disc pl-5 space-y-1 text-xs">
+                                <li><strong>Input</strong> is passed exactly as text to standard input (stdin).</li>
+                                <li>Format inputs line by line (e.g., Line 1: Array Size, Line 2: Space-separated elements).</li>
+                                <li><strong>Output</strong> must perfectly match the expected result (no extra spaces).</li>
+                                <li>Example Input: <code className="bg-white dark:bg-gray-800 px-1 rounded">5\n1 2 3 4 5</code> | Expected Output: <code className="bg-white dark:bg-gray-800 px-1 rounded">15</code></li>
+                              </ul>
+                            </div>
                             <button
                               type="button"
                               onClick={addTestCase}
